@@ -4,9 +4,11 @@ struct Tree {
    T f(T a, T b) { return max(a, b); }  // (any associative fn)
    vector<T> s;
    int n;
-   Tree(int n = 0, T def = unit) : s(2 * n, def), n(n) {}
-   void update(int pos, T val) {
-      for(s[pos += n] = val; pos /= 2;) s[pos] = f(s[pos * 2], s[pos * 2 + 1]);
+   Tree(int n_ = 0, T def = unit){
+    ll log = 1;
+    while((1<<log) < n_) log++;
+    n = 1<<log;
+    s = vector<T>(n*2,def);
    }
    T query(int b, int e) {  // query [b, e)
       T ra = unit, rb = unit;
