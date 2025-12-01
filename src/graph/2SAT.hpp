@@ -1,60 +1,21 @@
-struct TwoSat {
-   int N;
-   vector<vector<int>> gr;
-   vector<int> values;  // 0 = false, 1 = true
-
-   TwoSat(int n = 0) : N(n), gr(2 * n) {}
-
-   int addVar() {  // (optional)
-      gr.emplace_back();
-      gr.emplace_back();
-      return N++;
-   }
-   // (f V j)
-   void either(int f, int j) {
-      f = max(2 * f, -1 - 2 * f);
-      j = max(2 * j, -1 - 2 * j);
-      gr[f].push_back(j ^ 1);
-      gr[j].push_back(f ^ 1);
-   }
-   // x は真
-   void setValue(int x) { either(x, x); }
-   // li の中から高々１つ真
-   void atMostOne(const vector<int>& li) {  // (optional)
-      if(sz(li) <= 1) return;
-      int cur = ~li[0];
-      rep(i, 2, sz(li)) {
-         int next = addVar();
-         either(cur, ~li[i]);
-         either(cur, next);
-         either(~li[i], next);
-         cur = ~next;
-      }
-      either(cur, ~li[1]);
-   }
-
-   vector<int> val, comp, z;
-   int time = 0;
-   int dfs(int i) {
-      int low = val[i] = ++time, x;
-      z.push_back(i);
-      for(int e : gr[i])
-         if(!comp[e]) low = min(low, val[e] ?: dfs(e));
-      if(low == val[i]) do {
-            x = z.back();
-            z.pop_back();
-            comp[x] = low;
-            if(values[x >> 1] == -1) values[x >> 1] = x & 1;
-         } while(x != i);
-      return val[i] = low;
-   }
-
-   bool solve() {
-      values.assign(N, -1);
-      val.assign(2 * N, 0);
-      comp = val;
-      rep(i, 0, 2 * N) if(!comp[i]) dfs(i);
-      rep(i, 0, N) if(comp[2 * i] == comp[2 * i + 1]) return 0;
-      return 1;
-   }
+// need SCC
+struct TWO_SAT {
+    int _n;
+    vector<bool> answer;
+    SCC scc;
+    TWO_SAT(int n=0) : _n(n), answer(n), scc(2 * n) {}
+    // if(f is true) x_i; else \bar{x_i}
+    // if(g is true) x_j; else \bar{x_j}
+    void add_clause(int i, bool f, int j, bool g) {
+        scc.add_edge(2 * i + (f ? 0 : 1), 2 * j + (g ? 1 : 0));
+        scc.add_edge(2 * j + (g ? 0 : 1), 2 * i + (f ? 1 : 0));
+    }
+    bool satisfiable() {
+        auto id = scc.scc_ids().second;
+        for (int i = 0; i < _n; i++) {
+            if (id[2 * i] == id[2 * i + 1]) return false;
+            answer[i] = id[2 * i] < id[2 * i + 1];
+        }
+        return true;
+    }
 };
