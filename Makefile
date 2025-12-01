@@ -3,7 +3,6 @@ PHONY: build verify serve
 build: notebook.pdf
 
 verify: .verify-helper/timestamps.local.json $(wildcard src/*/* test/* test/*/*)
-	clang-format -i test/*/*.cpp test/*.hpp
 	oj-verify run
 
 URL = "http://127.0.0.1:4000"
@@ -25,7 +24,6 @@ notebook.pdf: build/base.css build/notebook.css build/notebook.html
 	vivliostyle build build/notebook.html -o notebook.pdf
 
 build/notebook.html: build/build.js $(wildcard src/*/* src/*/*/*) .clang-format
-	clang-format -i $(wildcard src/*/*.hpp src/*/*/*.hpp)
 	node build/build.js
 
 build/notebook.css: build/build.js
