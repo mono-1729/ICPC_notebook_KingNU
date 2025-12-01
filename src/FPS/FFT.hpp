@@ -1,10 +1,10 @@
-// {998244353, 3}, {1811939329, 13}, {2013265921, 31}
+// {998244353, 3}, {1000000007, 5}, {1811939329, 13}, {2013265921, 31}
 mm g = 3;  // 原始根
 void fft(vector<mm>& a) {
-   ll n = sz(a), lg = __lg(n);
+   ll n = a.size(), lg = __lg(n);
    assert((1 << lg) == n);
    vector<mm> b(n);
-   rep(l, 1, lg + 1) {
+   rep(l, 1, lg+1){
       ll w = n >> l;
       mm s = 1, r = g.pow(mod >> l);
       for(ll u = 0; u < n / 2; u += w) {
@@ -20,15 +20,12 @@ void fft(vector<mm>& a) {
 }
 vector<mm> conv(vector<mm> a, vector<mm> b) {
    if(a.empty() || b.empty()) return {};
-   size_t s = sz(a) + sz(b) - 1, n = bit_ceil(s);
-   // if(min(sz(a), sz(b)) <= 60) 愚直に掛け算
-   a.resize(n);
-   b.resize(n);
-   fft(a);
-   fft(b);
+   size_t s = a.size()+b.size()-1, n = bit_ceil(s);
+   a.resize(n), b.resize(n);
+   fft(a), fft(b);
    mm inv = mm(n).inv();
    rep(i, 0, n) a[i] *= b[i] * inv;
-   reverse(1 + all(a));
+   reverse(a.begin()+1, a.end());
    fft(a);
    a.resize(s);
    return a;
