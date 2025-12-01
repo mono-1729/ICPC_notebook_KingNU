@@ -1,9 +1,9 @@
 template<class T,
-         T (*op)(const T&, const T&),
+         T (*op)(T, T),
          T (*e)(),
          class F,
-         T (*mapping)(const F&, const T&),
-         F (*composition)(const F&, const F&),
+         T (*mapping)(F, T),
+         F (*composition)(F, F),
          F (*id)()>
 struct LazySegmentTree {
    LazySegmentTree(const int _n) : n(_n) {
@@ -12,7 +12,7 @@ struct LazySegmentTree {
       d.assign(len * 2, e());
       lazy.assign(len, id());
    }
-   void set(const int i, const T& x) {
+   void set(const int i, const T x) {
       assert(0 <= i && i < n);
       d[i + len] = x;
    }
@@ -25,7 +25,7 @@ struct LazySegmentTree {
    void build() {
       for(int i = len - 1; i >= 1; i--) update(i);
    }
-   void update(int l, int r, const F& x) {
+   void update(int l, int r, const F x) {
       assert(0 <= l && l <= r && r <= n);
       l += len;
       r += len;
@@ -128,3 +128,16 @@ struct LazySegmentTree {
       lazy[k] = id();
    }
 };
+
+//区間加算・区間和取得
+struct S{
+    ll value;
+    ll size;
+};
+using F = ll;
+
+S op(S a, S b){ return {a.value+b.value, a.size+b.size}; }
+S e(){ return {0, 0}; }
+S mapping(F f, S x){ return {x.value + f*x.size, x.size}; }
+F composition(F f, F g){ return f+g; }
+F id(){ return 0; }
