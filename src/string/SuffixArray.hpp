@@ -1,6 +1,7 @@
 // returns pair{sa, lcp}
 // sa 長さ n : s[sa[0]:] < s[sa[1]:] < … < s[sa[n-1]:]
 // lcp 長さ n-1 : lcp[i] = LCP(s[sa[i]:], s[sa[i+1]:])
+#define all(a) begin(a), end(a)
 auto SA(string s) {
    ll n = sz(s) + 1, lim = 256;
    // assert(lim > ranges::max(s));
