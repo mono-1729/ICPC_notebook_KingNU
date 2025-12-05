@@ -1,3 +1,6 @@
-# 使い方: sh hash.sh -> コピペ -> Ctrl + D
-# コメント・空白・改行を削除して md5 でハッシュする
-g++ -dD -E -P -fpreprocessed - | tr -d '[:space:]' | md5sum | cut -c-6
+#!/bin/sh
+file=${1:-$(ls -t *.cpp | head -n 1)}
+out="${file%.*}"
+
+g++ -std=gnu++2a -D_DEBUG -Wall -Wextra -Wshadow -Wconversion -fsanitize=undefined,address -ggdb "$file" -o "$out" &&
+g++ -dD -E -P -fpreprocessed "$file" | tr -d '[:space:]' | md5sum | cut -c-6

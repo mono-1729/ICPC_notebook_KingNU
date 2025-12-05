@@ -117,10 +117,12 @@
         <h2 id="hash.sh">hash.sh</h2>
     </div>
     <div class="content content-sh">
-    <pre><code class="line-numbers"><span class="line"><span class="num">1</span><span class="token comment"># 使い方: sh hash.sh -> コピペ -> Ctrl + D</span></span>
-<span class="line"><span class="num">2</span><span class="token comment"># コメント・空白・改行を削除して md5 でハッシュする</span></span>
-<span class="line"><span class="num">3</span>g++ <span class="token parameter variable">-dD</span> <span class="token parameter variable">-E</span> <span class="token parameter variable">-P</span> <span class="token parameter variable">-fpreprocessed</span> - <span class="token operator">|</span> <span class="token function">tr</span> <span class="token parameter variable">-d</span> <span class="token string">'[:space:]'</span> <span class="token operator">|</span> md5sum <span class="token operator">|</span> <span class="token function">cut</span> -c-6</span>
-<span class="line"><span class="num">4</span></span></code></pre>
+    <pre><code class="line-numbers"><span class="line"><span class="num">1</span><span class="token shebang important">#!/bin/sh</span></span>
+<span class="line"><span class="num">2</span><span class="token assign-left variable">file</span><span class="token operator">=</span><span class="token variable">${1<span class="token operator">:-</span>$(ls -t *.cpp | head -n 1)}</span></span>
+<span class="line"><span class="num">3</span><span class="token assign-left variable">out</span><span class="token operator">=</span><span class="token string">"<span class="token variable">${file<span class="token operator">%</span>.*}</span>"</span></span>
+<span class="line"><span class="num">4</span> </span>
+<span class="line"><span class="num">5</span>g++ <span class="token parameter variable">-std</span><span class="token operator">=</span>gnu++2a <span class="token parameter variable">-D_DEBUG</span> <span class="token parameter variable">-Wall</span> <span class="token parameter variable">-Wextra</span> <span class="token parameter variable">-Wshadow</span> <span class="token parameter variable">-Wconversion</span> <span class="token parameter variable">-fsanitize</span><span class="token operator">=</span>undefined,address <span class="token parameter variable">-ggdb</span> <span class="token string">"<span class="token variable">$file</span>"</span> <span class="token parameter variable">-o</span> <span class="token string">"<span class="token variable">$out</span>"</span> <span class="token operator">&amp;&amp;</span></span>
+<span class="line"><span class="num">6</span>g++ <span class="token parameter variable">-dD</span> <span class="token parameter variable">-E</span> <span class="token parameter variable">-P</span> <span class="token parameter variable">-fpreprocessed</span> <span class="token string">"<span class="token variable">$file</span>"</span> <span class="token operator">|</span> <span class="token function">tr</span> <span class="token parameter variable">-d</span> <span class="token string">'[:space:]'</span> <span class="token operator">|</span> md5sum <span class="token operator">|</span> <span class="token function">cut</span> -c-6</span></code></pre>
 </div>
 
     <div class="filename">
